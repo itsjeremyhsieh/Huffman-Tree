@@ -87,7 +87,7 @@ class HuffmanCoding {
             if(cur.right_child)
                 dictionary(*(cur.right_child), code+"1");
         }
-        void outputToTxt(string filepath) {
+        void outputToTxt(string filepath = "output.txt") {
             //output a txt file
             ofstream fs(filepath, fstream::out);
             for(auto i = 0 ; i < plaintext.size() ; i++) {
@@ -114,4 +114,5 @@ int main() {
     root = huffmantree.huffmanTreeCreate();
     huffmantree.dictionary(*root, "");
     huffmantree.show();
+    huffmantree.outputToTxt();
 }
