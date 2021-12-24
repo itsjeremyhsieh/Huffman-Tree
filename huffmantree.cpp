@@ -7,6 +7,71 @@
 
 using namespace std;
 
+
+class bitChar{
+    public:
+        unsigned char* c;
+        int shift_count;
+        string BITS;
+
+        bitChar()
+        {
+            shift_count = 0;
+            c = (unsigned char*)calloc(1, sizeof(char));
+        }
+
+        void setBITS(string X)
+        {
+            BITS = X;
+        }
+
+        int insertBits(ofstream& outf)
+        {
+            int total = 0;
+
+            while(BITS.length())
+            {
+                if(BITS[0] == '1')
+                    *c |= 1;
+                *c <<= 1;
+                ++shift_count;
+                ++total;
+                BITS.erase(0, 1);
+
+                if(shift_count == 7 )
+                {
+                    if(BITS.size()>0)
+                    {
+                        if(BITS[0] == '1')
+                            *c |= 1;
+                        ++total;
+                        BITS.erase(0, 1);
+                    }
+
+                    writeBits(outf);
+                    shift_count = 0;
+                    free(c);
+                    c = (unsigned char*)calloc(1, sizeof(char));
+                }
+            }
+
+            if(shift_count > 0)
+            {
+                *c <<= (7 - shift_count);
+                writeBits(outf);
+                free(c);
+                c = (unsigned char*)calloc(1, sizeof(char));
+            }
+            outf.close();
+            return total;
+        }
+
+        void writeBits(ofstream& outf)
+        {
+            outf << *c;
+        }
+};
+
 class Node {
     public:
         int value;
@@ -34,8 +99,9 @@ class HuffmanCoding {
         unordered_map<char, int> fraquency;
         unordered_map<char, string> code_word;
         priority_queue<Node*, vector<Node*>, comp> nodes;
-        vector<char> plaintext;
-
+        vector<char> plaintext; 
+        int countWord = 0;
+        int countByte = 0;
     public:
         HuffmanCoding(string filepath) {
             //read the file and count the fraquency of each character
@@ -44,6 +110,7 @@ class HuffmanCoding {
             while(fs.get(ch)) {
                 if(ch == '\n')
                         continue;
+                countWord++;
                 plaintext.push_back(ch);
                 if(fraquency.count(ch))
                     fraquency[ch]++;
@@ -96,12 +163,30 @@ class HuffmanCoding {
             }
             fs.close();
         }
-        //TODO a method to output a binary file
-
+        
+        void outputToBin(string filepath = "output_bin.dat") {
+            ofstream myFile;
+            myFile.open(filepath, ios::binary | ios::out);
+            string str = "";
+            for(auto i = 0 ; i < plaintext.size() ; i++) {
+                str += code_word[plaintext[i]];
+            }
+            countByte = str.length();
+            bitChar bchar;
+            bchar.setBITS(str);
+            bchar.insertBits(myFile);
+            myFile.close();
+        }
         //TODO a method to display the tree(optional)
 
-        //TODO a method to calculate the compression ratio
+        void compressRatio() {
+			float ratio = (float)countByte / (countWord * 8);
+			cout << "Before compress: " << countWord * 8 << "bits" << endl;
+			cout << "After compress: " << countByte << "bits" << endl;
+			cout << "Compress Ratio = " << ratio * 100 << "%" << endl;
+        }
 };
+
 
 //TODO need a menu function
 int main() {
@@ -115,4 +200,6 @@ int main() {
     huffmantree.dictionary(*root, "");
     huffmantree.show();
     huffmantree.outputToTxt();
+    huffmantree.outputToBin();
+    huffmantree.compressRatio();
 }
