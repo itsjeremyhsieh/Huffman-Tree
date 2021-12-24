@@ -101,7 +101,7 @@ class HuffmanCoding {
         priority_queue<Node*, vector<Node*>, comp> nodes;
         vector<char> plaintext; 
         int countWord = 0;
-        int countByte = 0;
+        int countBits = 0;
     public:
         HuffmanCoding(string filepath) {
             //read the file and count the fraquency of each character
@@ -171,7 +171,7 @@ class HuffmanCoding {
             for(auto i = 0 ; i < plaintext.size() ; i++) {
                 str += code_word[plaintext[i]];
             }
-            countByte = str.length();
+            countBits = str.length();
             bitChar bchar;
             bchar.setBITS(str);
             bchar.insertBits(myFile);
@@ -180,9 +180,9 @@ class HuffmanCoding {
         //TODO a method to display the tree(optional)
 
         void compressRatio() {
-			float ratio = (float)countByte / (countWord * 8);
-			cout << "Before compress: " << countWord * 8 << "bits" << endl;
-			cout << "After compress: " << countByte << "bits" << endl;
+			float ratio = (float)countBits / (countWord * 8);
+			cout << "Before compress: " << countWord * 8 << " bits" << endl;
+			cout << "After compress: " << countBits << " bits" << endl;
 			cout << "Compress Ratio = " << ratio * 100 << "%" << endl;
         }
 };
@@ -192,7 +192,7 @@ class HuffmanCoding {
 int main() {
     Node* root;
     string filepath;
-    cout<<"Input the file path:";
+    cout<<"Input the file path: ";
     cin>>filepath;
     HuffmanCoding huffmantree(filepath);
     huffmantree.pushIntoQueue();
