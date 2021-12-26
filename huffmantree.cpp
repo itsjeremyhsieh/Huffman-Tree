@@ -188,7 +188,7 @@ class HuffmanCoding {
 };
 
 
-//TODO need a menu function
+//TODO a menu function(optional)
 int main() {
     Node* root;
     string filepath;
