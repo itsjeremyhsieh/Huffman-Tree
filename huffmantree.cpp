@@ -96,7 +96,7 @@ class comp {
 
 class HuffmanCoding {
     private:
-        unordered_map<char, int> fraquency;
+        unordered_map<char, int> frequency;
         unordered_map<char, string> code_word;
         priority_queue<Node*, vector<Node*>, comp> nodes;
         vector<char> plaintext; 
@@ -104,7 +104,7 @@ class HuffmanCoding {
         int countBits = 0;
     public:
         HuffmanCoding(string filepath) {
-            //read the file and count the fraquency of each character
+            //read the file and count the frequency of each character
             ifstream fs(filepath, fstream::in);
             char ch;
             while(fs.get(ch)) {
@@ -112,22 +112,22 @@ class HuffmanCoding {
                         continue;
                 countWord++;
                 plaintext.push_back(ch);
-                if(fraquency.count(ch))
-                    fraquency[ch]++;
+                if(frequency.count(ch))
+                    frequency[ch]++;
                 else
-                    fraquency[ch] = 1;
+                    frequency[ch] = 1;
             }
             fs.close();
         }
         void pushIntoQueue() {
             //push the element in fracquency into priority queue
-            for(auto i = fraquency.begin() ; i != fraquency.end() ; i++) {
+            for(auto i = frequency.begin() ; i != frequency.end() ; i++) {
                 nodes.push(new Node((*i).second, (*i).first));
             }
         }
         Node* huffmanTreeCreate() {
             //create the tree and return the root's address
-            for(int i = 0 ; i < fraquency.size()-1 ; i++) {
+            for(int i = 0 ; i < frequency.size()-1 ; i++) {
                 Node* left = nodes.top();
                 nodes.pop();
                 Node* right = nodes.top();
